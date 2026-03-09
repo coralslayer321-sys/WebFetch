@@ -1,32 +1,60 @@
 #!/bin/bash
 
-# --- Cinematic UI ---
+# --- Cinematic Colors ---
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+PURPLE='\033[0;35m'
+RED='\033[0;31m'
 RESET='\033[0m'
+
+# --- The "Professional Delay" Function ---
+# This simulates deep system indexing to fill video time
+slow_log() {
+    local message=$1
+    local count=$2
+    echo -e "${PURPLE}[ CACHE ] ${message}...${RESET}"
+    for ((i=1; i<=count; i++)); do
+        echo -e "${CYAN}  └─> Processing Data Packet #$((RANDOM % 900 + 100))X-${i}... [OK]${RESET}"
+        sleep 0.8 # Adjust this to make the video longer or shorter
+    done
+}
 
 clear
 echo -e "${CYAN}================================================================${RESET}"
-echo -e "${WHITE}              WEBFETCH v8.9: HOSTING INSTALLER                  ${RESET}"
+echo -e "${WHITE}              WEBFETCH v9.5: ENTERPRISE CLOUD SYSTEM            ${RESET}"
 echo -e "${CYAN}================================================================${RESET}"
 
-# --- Forced Inputs for VPS ---
-read -p "Brand Name: " U_NAME < /dev/tty
-read -p "Discord Link: " DURL < /dev/tty
-read -p "Home Page YT Link: " HOME_BG < /dev/tty
-read -p "Pricing Page Image Link: " PRICE_BG < /dev/tty
+# --- Inputs ---
+read -p "[?] Brand Name: " U_NAME < /dev/tty
+read -p "[?] Discord Link: " DURL < /dev/tty
+read -p "[?] Home YT Link: " HOME_BG < /dev/tty
+read -p "[?] Pricing BG Link: " PRICE_BG < /dev/tty
 
 # Extract YouTube ID safely
 VID=$(echo $HOME_BG | sed -n 's/.*v=\([^&]*\).*/\1/p')
 [ -z "$VID" ] && VID=$(echo $HOME_BG | sed -n 's/.*youtu.be\/\([^?]*\).*/\1/p')
 
-echo -e "\n${WHITE}CONFIGURING WEB SERVER FOR $U_NAME...${RESET}\n"
+echo -e "\n${RED}[ WARNING ] INITIALIZING ROOT DEPLOYMENT PROTOCOL...${RESET}\n"
+sleep 2
+
+# --- The Long Professional Sequence ---
+# Each block here adds significant "activity" to your terminal
+slow_log "Indexing NVMe Virtual Partitions" 5
+slow_log "Optimizing Node.js V8 Engine Clusters" 8
+slow_log "Establishing Encrypted Tunnel to Discord" 4
+slow_log "Pre-rendering Glassmorphism UI Components" 10
+slow_log "Syncing Global YouTube CDN Buffers" 6
+slow_log "Finalizing Kernel-Level Web Server Config" 5
+
+echo -e "\n${GREEN}[ SUCCESS ] CORE ARCHITECTURE ESTABLISHED.${RESET}"
+echo -e "${WHITE}WRITING APPLICATION FILES...${RESET}"
 
 # --- Phase 1: Create Package.JSON ---
 cat << EOF > package.json
 {
-  "name": "webfetch-hosting",
+  "name": "webfetch-enterprise",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": { "start": "node index.js" }
@@ -106,8 +134,11 @@ app.get('/pricing', (req, res) => {
 app.listen(3000);
 EOF
 
-# --- Phase 3: Dependencies ---
-echo -e "${WHITE}Installing modules...${RESET}"
+# --- Dependencies ---
+echo -e "${YELLOW}Finalizing dependency injection...${RESET}"
 npm install express --quiet
 
-echo -e "\n${GREEN}SUCCESS! Run 'npm start' to go live.${RESET}"
+echo -e "\n----------------------------------------------------------------"
+echo -e "${GREEN}DEPLOYMENT COMPLETE: System ID: WEB-$(date +%s)${RESET}"
+echo -e "Run: ${WHITE}npm start${RESET}"
+echo -e "----------------------------------------------------------------"
