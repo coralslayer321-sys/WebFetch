@@ -10,48 +10,65 @@ RED='\033[0;31m'
 RESET='\033[0m'
 
 # --- The "Professional Delay" Function ---
-# This simulates deep system indexing to fill video time
 slow_log() {
     local message=$1
     local count=$2
     echo -e "${PURPLE}[ CACHE ] ${message}...${RESET}"
     for ((i=1; i<=count; i++)); do
         echo -e "${CYAN}  └─> Processing Data Packet #$((RANDOM % 900 + 100))X-${i}... [OK]${RESET}"
-        sleep 0.8 # Adjust this to make the video longer or shorter
+        sleep 1.2 # Increased delay for a longer video
     done
+}
+
+# --- The Confirmation Gate ---
+confirm_step() {
+    local step_name=$1
+    echo -e "\n${YELLOW}[!] PENDING: ${step_name}${RESET}"
+    read -p "Are You Sure To Continue [Y/n]: " choice < /dev/tty
+    case "$choice" in 
+      y|Y ) echo -e "${GREEN}[+] Step Confirmed.${RESET}\n";;
+      * ) echo -e "${RED}[-] Deployment Aborted by User.${RESET}"; exit 1;;
+    esac
 }
 
 clear
 echo -e "${CYAN}================================================================${RESET}"
-echo -e "${WHITE}              WEBFETCH v9.5: ENTERPRISE CLOUD SYSTEM            ${RESET}"
+echo -e "${WHITE}              WEBFETCH v9.8: ENTERPRISE GATEKEEPER              ${RESET}"
 echo -e "${CYAN}================================================================${RESET}"
 
-# --- Inputs ---
-read -p "[?] Brand Name: " U_NAME < /dev/tty
-read -p "[?] Discord Link: " DURL < /dev/tty
-read -p "[?] Home YT Link: " HOME_BG < /dev/tty
-read -p "[?] Pricing BG Link: " PRICE_BG < /dev/tty
+# --- Configuration Phase ---
+read -p "[CONFIG] Brand Name: " U_NAME < /dev/tty
+read -p "[CONFIG] Discord Link: " DURL < /dev/tty
+read -p "[CONFIG] Home Page YT Link: " HOME_BG < /dev/tty
+read -p "[CONFIG] Pricing Page Image Link: " PRICE_BG < /dev/tty
 
 # Extract YouTube ID safely
 VID=$(echo $HOME_BG | sed -n 's/.*v=\([^&]*\).*/\1/p')
 [ -z "$VID" ] && VID=$(echo $HOME_BG | sed -n 's/.*youtu.be\/\([^?]*\).*/\1/p')
 
-echo -e "\n${RED}[ WARNING ] INITIALIZING ROOT DEPLOYMENT PROTOCOL...${RESET}\n"
-sleep 2
+echo -e "\n${RED}[ WARNING ] INITIALIZING ROOT DEPLOYMENT PROTOCOL...${RESET}"
+confirm_step "System Kernel Access"
 
-# --- The Long Professional Sequence ---
-# Each block here adds significant "activity" to your terminal
-slow_log "Indexing NVMe Virtual Partitions" 5
-slow_log "Optimizing Node.js V8 Engine Clusters" 8
-slow_log "Establishing Encrypted Tunnel to Discord" 4
-slow_log "Pre-rendering Glassmorphism UI Components" 10
-slow_log "Syncing Global YouTube CDN Buffers" 6
-slow_log "Finalizing Kernel-Level Web Server Config" 5
+# --- Phase 1: Storage & Logic ---
+slow_log "Scanning NVMe Partition Clusters" 6
+confirm_step "Commit Changes to Disk"
 
-echo -e "\n${GREEN}[ SUCCESS ] CORE ARCHITECTURE ESTABLISHED.${RESET}"
-echo -e "${WHITE}WRITING APPLICATION FILES...${RESET}"
+# --- Phase 2: Runtime Optimization ---
+slow_log "Optimizing Node.js V8 Cluster Performance" 8
+confirm_step "Verify Runtime Environment"
 
-# --- Phase 1: Create Package.JSON ---
+# --- Phase 3: Network Handshake ---
+slow_log "Establishing Encrypted Handshake with Discord CDN" 5
+slow_log "Synchronizing YouTube Global Video Buffers" 7
+confirm_step "Finalize Network Configuration"
+
+# --- Phase 4: UI Injection ---
+slow_log "Injecting Custom CSS Glassmorphism Engine" 10
+confirm_step "Apply Visual Styles"
+
+echo -e "\n${WHITE}WRITING CORE APPLICATION FILES...${RESET}"
+
+# --- File Generation ---
 cat << EOF > package.json
 {
   "name": "webfetch-enterprise",
@@ -61,7 +78,6 @@ cat << EOF > package.json
 }
 EOF
 
-# --- Phase 2: Building the App ---
 cat << EOF > index.js
 const express = require('express');
 const app = express();
@@ -134,11 +150,11 @@ app.get('/pricing', (req, res) => {
 app.listen(3000);
 EOF
 
-# --- Dependencies ---
-echo -e "${YELLOW}Finalizing dependency injection...${RESET}"
+# --- Final Dependency Injection ---
+echo -e "${YELLOW}Injecting final dependencies...${RESET}"
 npm install express --quiet
 
 echo -e "\n----------------------------------------------------------------"
-echo -e "${GREEN}DEPLOYMENT COMPLETE: System ID: WEB-$(date +%s)${RESET}"
+echo -e "${GREEN}DEPLOYMENT SUCCESSFUL: System ID: WEB-$(date +%s)${RESET}"
 echo -e "Run: ${WHITE}npm start${RESET}"
 echo -e "----------------------------------------------------------------"
