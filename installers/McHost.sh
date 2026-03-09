@@ -1,18 +1,17 @@
 #!/bin/bash
 
-# --- Cinematic Colors ---
+# --- Cinematic UI ---
 CYAN='\033[0;36m'
-GREEN='\033[0;32m'
 WHITE='\033[1;37m'
+GREEN='\033[0;32m'
 RESET='\033[0m'
 
 clear
 echo -e "${CYAN}================================================================${RESET}"
-echo -e "${WHITE}              WEBFETCH v8.2: Hosting Installer                 ${RESET}"
+echo -e "${WHITE}              WEBFETCH v8.9: HOSTING INSTALLER                  ${RESET}"
 echo -e "${CYAN}================================================================${RESET}"
 
-# --- Phase 1: Forced Interactive Inputs ---
-# We use < /dev/tty to ensure it asks for input even when piped
+# --- Forced Inputs for VPS ---
 read -p "Brand Name: " U_NAME < /dev/tty
 read -p "Discord Link: " DURL < /dev/tty
 read -p "Home Page YT Link: " HOME_BG < /dev/tty
@@ -22,7 +21,17 @@ read -p "Pricing Page Image Link: " PRICE_BG < /dev/tty
 VID=$(echo $HOME_BG | sed -n 's/.*v=\([^&]*\).*/\1/p')
 [ -z "$VID" ] && VID=$(echo $HOME_BG | sed -n 's/.*youtu.be\/\([^?]*\).*/\1/p')
 
-echo -e "\n${CYAN}CONFIGURING WEB SERVER FOR $U_NAME...${RESET}\n"
+echo -e "\n${WHITE}CONFIGURING WEB SERVER FOR $U_NAME...${RESET}\n"
+
+# --- Phase 1: Create Package.JSON ---
+cat << EOF > package.json
+{
+  "name": "webfetch-hosting",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": { "start": "node index.js" }
+}
+EOF
 
 # --- Phase 2: Building the App ---
 cat << EOF > index.js
@@ -50,4 +59,55 @@ const header = (title) => \`
             .pricing-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
             .card { background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; width: 240px; padding: 35px 20px; text-align: center; }
             .card h2 { font-size: 36px; color: #38bdf8; }
-            .spec { background: rgba(255
+            .btn { display:block; margin-top:20px; padding:14px; background:#38bdf8; color:#000; text-decoration:none; font-weight:900; border-radius:8px; }
+            footer { background: #000; padding: 30px; text-align: center; border-top: 1px solid #111; color: #555; font-size: 14px; }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="/" class="logo">$U_NAME</a>
+            <div class="nav-links"><a href="/">Home</a><a href="/pricing">Pricing</a><a href="$DURL">Discord</a></div>
+        </nav>
+\`;
+
+const footer = \`
+        <footer>
+            <p>© All Rights Reserved 2026 WebFetch</p>
+        </footer>
+    </body></html>\`;
+
+app.get('/', (req, res) => {
+    res.send(header('Home') + \`
+        <div class="hero">
+            <div class="video-bg" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:-1;">
+                <iframe src="https://www.youtube.com/embed/$VID?autoplay=1&mute=1&loop=1&playlist=$VID&controls=0" frameborder="0"></iframe>
+            </div>
+            <div style="z-index:1; text-align:center;">
+                <h1 style="font-size:90px; margin:0; font-weight:900; letter-spacing:-3px;">$U_NAME</h1>
+                <p style="color:#38bdf8; font-size:24px; text-transform:uppercase; letter-spacing:5px;">Premium Hosting</p>
+            </div>
+        </div>
+    \` + footer);
+});
+
+app.get('/pricing', (req, res) => {
+    res.send(header('Pricing') + \`
+        <div class="pricing-section">
+            <h2 style="text-align:center; font-size:40px; margin-bottom:50px; font-weight:900;">CHOOSE YOUR PLAN</h2>
+            <div class="pricing-grid">
+                <div class="card"><h3>Starter</h3><h2>₹200</h2><a href="$DURL" class="btn">Order Now</a></div>
+                <div class="card" style="border-color:#38bdf8"><h3>Growth</h3><h2>₹300</h2><a href="$DURL" class="btn">Order Now</a></div>
+                <div class="card"><h3>Pro</h3><h2>₹500</h2><a href="$DURL" class="btn">Order Now</a></div>
+            </div>
+        </div>
+    \` + footer);
+});
+
+app.listen(3000);
+EOF
+
+# --- Phase 3: Dependencies ---
+echo -e "${WHITE}Installing modules...${RESET}"
+npm install express --quiet
+
+echo -e "\n${GREEN}SUCCESS! Run 'npm start' to go live.${RESET}"
